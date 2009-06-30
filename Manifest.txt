@@ -1,0 +1,13 @@
+lib/rhesus.rb
+lib/rhesus/core.rb
+lib/rhesus/utils.rb
+lib/templates/splash_screen
+lib/templates/basic/basic_view.rb
+lib/templates/basic/basic_ui.rb
+lib/templates/basic/basic_model.rb
+lib/templates/basic/basic_controller.rb
+lib/templates/about/about_ui.rb
+lib/templates/about/about_controller.rb
+lib/templates/about/about_view.rb
+lib/templates/about/about_model.rb
+lib/version.rb

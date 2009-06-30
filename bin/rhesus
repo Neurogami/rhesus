@@ -1,0 +1,106 @@
+#!/usr/bin/env ruby
+
+require File.expand_path(File.join(File.dirname(__FILE__), %w[.. lib rhesus]))
+
+def help(message = nil)
+  puts message + "\\\n-----------------------------------\\\n" unless message.nil?
+  puts <<-ENDL
+  Usage:
+      rhesus -h/--help
+      rhesus -v/--version
+      rhesus command [options]
+
+  Commands:
+      list 
+        lists available templates.
+
+      gen <template-name>
+        Generates files fom given template name.
+
+  ENDL
+end
+
+def process_template template_name
+  puts "Using template #{template_name}"
+
+  var_set = {}
+
+  Neurogami::Rhesus::Core.required_vars_for_template_set(template_name).each do |var|
+    print "Value for #{var}: "
+    var_set[var] = gets.strip
+  end
+
+  if var_set.empty?
+    puts "The templates have no variables. "
+    print "Is this OK? [Y/n]"
+
+    if gets.strip =~ /n|N/
+      puts "OK, exiting"
+      return
+    end
+
+  else
+    puts "Using values "
+    var_set.each { |k,v| puts "#{k}: #{v}" }
+
+    print "Is this OK? [Y/n]"
+
+    if gets.strip =~ /n|N/
+      puts "OK, exiting"
+      return
+    end
+
+  end
+
+  print "Under what directory do you want these files written? "
+  location = gets.strip
+  location = './' if location.empty?
+
+  Neurogami::Rhesus::Core::selected_template_files(template_name).each do |path|
+    next unless File.file?(path)
+    Neurogami::Rhesus::Core::process template_name, var_set, location, path
+  end
+
+end
+
+def list_templates
+  puts  Neurogami::Rhesus::Core.templates
+end
+
+
+def generate_from_template
+  if ARGV.first
+    puts "Generate from #{ARGV.first} template"
+  else
+    Neurogami::Rhesus::Core.templates.each_with_index do |template, idx|
+      puts "#{idx+1}: #{template}"
+    end
+    item =  0
+    while item < 1 || item-1 > Neurogami::Rhesus::Core.templates.size
+      print "Enter the number of the template to use: "
+      item = gets.to_i
+    end
+
+    process_template Neurogami::Rhesus::Core.templates[item-1]
+  end
+end
+#-------------------------------------------------
+if ARGV.empty?
+  help
+else
+  option = ARGV.shift
+  case option 
+  when "-h" || "--help"
+    help
+  when "-v" || "--version"
+    puts "Rhesus version #{Rhesus.version}"
+  when "list"
+    puts "Templates"
+    list_templates
+  when"gen"
+    generate_from_template
+  else
+    puts "Nothing known about #{ARGV[0]}"
+  end
+end
+
