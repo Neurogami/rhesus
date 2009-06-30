@@ -2,7 +2,7 @@ rhesus
 =======
 
     by James Britt 
-    http://code.neurogami.com
+    http://www.neurogami.com
 
 DESCRIPTION
 -----------
