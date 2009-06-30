@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require File.expand_path(File.join(File.dirname(__FILE__), %w[.. lib rhesus]))
+require File.expand_path(File.join(File.dirname(__FILE__), %w[.. lib version]))
 
 def help(message = nil)
   puts message + "\\\n-----------------------------------\\\n" unless message.nil?
@@ -93,7 +94,7 @@ else
   when "-h" || "--help"
     help
   when "-v" || "--version"
-    puts "Rhesus version #{Rhesus.version}"
+    puts "Rhesus version #{Neurogami::Rhesus::VERSION}"
   when "list"
     puts "Templates"
     list_templates

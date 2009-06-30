@@ -16,7 +16,7 @@ end
 ensure_in_path 'lib'
 require 'version'
 
-#task :default => 'spec:run'
+task :default => 'test:bacon'
 
 PROJ.name = 'rhesus'
 PROJ.authors = 'James Britt / Neurogami'
