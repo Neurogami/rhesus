@@ -3,12 +3,16 @@
 require File.expand_path(File.join(File.dirname(__FILE__), %w[.. lib rhesus]))
 require File.expand_path(File.join(File.dirname(__FILE__), %w[.. lib version]))
 
+require 'fileutils'
+
 def help(message = nil)
   puts message + "\\\n-----------------------------------\\\n" unless message.nil?
   puts <<-ENDL
   Usage:
       rhesus -h/--help
       rhesus -v/--version
+      rhesus --setup
+
       rhesus command [options]
 
   Commands:
@@ -68,6 +72,25 @@ def list_templates
   puts  Neurogami::Rhesus::Core.templates
 end
 
+def setup
+  # Needs to create ~/.rhesus if it does not exist,
+  # then copy over some default templates, such as one for
+  # creating gems that bundle a template
+  warn "Setting up Rhesus ..."
+  create_rhesus_dir
+  copy_over_default_templates
+end
+
+def create_rhesus_dir
+  return if Neurogami::Rhesus::Core.user_dir_exists?
+  FileUtils.mkdir_p  Neurogami::Rhesus::Core.user_template_directory
+
+end
+
+def copy_over_default_templates
+  raise "Can not find your .rhesus directory!" unless Neurogami::Rhesus::Core.user_dir_exists?
+  FileUtils.cp_r File.dirname(__FILE__) + "/../default-templates/.", Neurogami::Rhesus::Core.user_template_directory
+end
 
 def generate_from_template
   if ARGV.first
@@ -98,8 +121,11 @@ else
   when "list"
     puts "Templates"
     list_templates
-  when"gen"
+  when "gen"
     generate_from_template
+
+  when '--setup'
+    setup
   else
     puts "Nothing known about #{ARGV[0]}"
   end

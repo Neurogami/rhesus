@@ -11,3 +11,4 @@ lib/templates/about/about_controller.rb
 lib/templates/about/about_view.rb
 lib/templates/about/about_model.rb
 lib/version.rb
+default-templates/klass.rb
