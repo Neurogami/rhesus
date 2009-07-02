@@ -113,9 +113,9 @@ What you call these directories is up to you; there is no code in place to do an
 as grouping projects and templates).  But something like that may be added if managing growing numbers of templates
 becomes an issue.  So, the suggested format is `project_type.template_name`
 
-Rhesus starts with some assumptions about what files might be using Erb.  You can add your own file extensions by placing a `haz_vars.txt` file in your `.rhesus` folder.
+Rhesus starts with some assumptions about what files might be using Erb.  You can add your own file patterns (sort of) by placing a `haz_vars.txt` file in your `.rhesus` folder.
 
-By default, the extensions are: `rb txt rhtml ini yml yaml`.
+By default, the file-end patterns are: `rb txt rhtml ini yml yaml Rakefile gemspec`.
 
 When you select a template set, Rhesus scans these files for Erb variables.  It then prompts
 you to provide values.  If you use any of these variable names in file or path names then Rhesus

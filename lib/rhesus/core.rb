@@ -19,9 +19,9 @@ module Neurogami
   module Rhesus
 
     class Core
-
-      haz_vars = %w{ rb txt rhtml ini yml yaml }
-      @@re = haz_vars.map { |x| '\.' + x }.join( '|') 
+      # Hacky :( FIXME Add a better way to define what files get slurped for parsing
+      haz_vars = %w{ rb txt rhtml ini yml yaml Rakefile rake gemspec}
+      @@re = haz_vars.map { |x|   x + '$' }.join( '|') 
       @@re = Regexp.new "(#{@@re})$"
 
       # http://refactormycode.com/codes/281-given-a-hash-of-variables-render-an-erb-template
