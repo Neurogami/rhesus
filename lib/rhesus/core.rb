@@ -154,9 +154,9 @@ module Neurogami
       end
 
 
-      def rename full_file_path
+      def self.rename full_file_path
         ts = Time.now.to_i.to_s
-        FileUtils.mv full_file_path, full_file_path + ts 
+        FileUtils.mv full_file_path, full_file_path + '.' + ts 
       end
 
     end
