@@ -20,7 +20,7 @@ module Neurogami
 
     class Core
       # Hacky :( FIXME Add a better way to define what files get slurped for parsing
-      haz_vars = %w{ rb txt rhtml ini yml yaml Rakefile rake gemspec}
+      haz_vars = %w{ rb txt rhtml ini yml yaml Rakefile rake gemspec feature}
       @@re = haz_vars.map { |x|   x + '$' }.join( '|') 
       @@re = Regexp.new "(#{@@re})$"
 
@@ -142,14 +142,21 @@ module Neurogami
         write_to = location + real_path 
         destination_dir = File.expand_path(File.dirname(write_to))
         FileUtils.mkdir_p destination_dir
-
+        file_to_write_to  = File.expand_path write_to
+        rename( file_to_write_to ) if File.exist? file_to_write_to 
         # Do a straight file copy unless this file might be using Erb
         if path =~ @@re
           text = process_template path, var_set 
-          File.open(File.expand_path(write_to), "w"){|f| f.puts text }
+          File.open(file_to_write_to, "w"){|f| f.puts text }
         else
-          FileUtils.cp path, File.expand_path( write_to )
+          FileUtils.cp path, file_to_write_to
         end
+      end
+
+
+      def rename full_file_path
+        ts = Time.now.to_i.to_s
+        FileUtils.mv full_file_path, full_file_path + ts 
       end
 
     end
