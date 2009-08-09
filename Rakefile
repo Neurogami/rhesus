@@ -26,7 +26,6 @@ PROJ.version = Neurogami::Rhesus::VERSION
 PROJ.readme_file = 'README.md'
 PROJ.summary = "Really simple, practical code generator."
 
-# PROJ.spec.opts << '--color'
 
 desc "Bacon specs"
 task 'test:bacon' do

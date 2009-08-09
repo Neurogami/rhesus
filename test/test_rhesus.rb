@@ -2,22 +2,25 @@ require 'rubygems'
 require 'bacon'
 require 'lib/rhesus/core'
 
+$here = File.expand_path(File.dirname(__FILE__))
+
 describe 'A rhesus directory' do
 
   before do
+
     @nrc = Neurogami::Rhesus::Core
     class Neurogami::Rhesus::Core
-      #def self.user_template_directory
-      #   "~/.rhesus"
-      #end
+      def self.user_template_directory
+         "#{$here}/.rhesus"
+      end
 
     end
 
   end
 
-
+  # Not all that useful ....
   it 'should be in the home directory' do
-    @nrc.user_template_directory.should.equal '/home/james/.rhesus'
+    @nrc.user_template_directory.should.equal $here  + '/.rhesus'
   end
 
   it 'should exist' do
@@ -32,14 +35,28 @@ describe 'A rhesus directory' do
     @nrc.templates.size.should.equal 5
   end
 
+end
 
-  #it 'should have 4 files in the monkeybars:about template set' do
-  #end
+describe 'The core Rhesus code' do
 
-  #it 'returns a project template reference given the qualified name "monkeybars:about"' do
-  #  pt = @nrc.get "monkeybars:about"
-  #  pt.class.should.equal Neurogami::Rhesus::TemplateSet 
-  #end
+  it 'really needs to populate an Erb string with key/value pairs' do
+    template_text = "I've got <%= adj1 %>, \nand I'm <%= adj2 %> <%= adj3 %>"
+    variable_set = { :adj1 => 'soul' , :adj2 => 'super', :adj3 => 'bad' }
+    new_text = Neurogami::Rhesus::Core.process_template template_text, variable_set 
+    new_text.should ==   "I've got soul, \nand I'm super bad"
+  end
+
+  it 'dang well better extract variable names from Erb, bro' do
+    template_text = "I've got <%= adj1 %>, \nand I'm <%= adj2 %> <%= adj3 %>. And I mean <%= adj2 %> <%= adj3 %>"
+
+    vars = Neurogami::Rhesus::Core.required_vars template_text.split( "\n")
+    vars.sort!
+    vars.should  == ['adj1', 'adj2', 'adj3' ]
+
+    #    vars.include?('adj1').should == true
+    #   vars.include?('adj2').should == true
+    #  vars.include?('adj3').should == true
+  end
 
 end
 
