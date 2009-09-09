@@ -1,11 +1,7 @@
 module Neurogami
   module Rhesus
     # :stopdoc:
-    VERSION = '0.2.5'
-    # :startdoc:
-
-    # Returns the version string for the library.
-    #
+    VERSION = '0.3.1'
 
     def self.version
       VERSION

@@ -62,17 +62,19 @@ module Neurogami
       #  
       def self.required_vars_for_template_set template_name
         #template_name.identifier_to_path!
-        vars = {}
+        vars = []
 
         selected_template_files(template_name).map do |path|
           next unless File.file? path
           next unless path =~ @@re
           file_lines = IO.readlines path
-          file_lines.each do |v|
-            vars[v] = v
-          end
+          vars.concat(required_vars(file_lines))
+          #file_lines.each do |v|
+          #  vars[v] = v
+          #end
         end
-        vars.keys.sort
+        vars.uniq!
+        vars.sort
       end
 
       def self.templates
@@ -124,6 +126,19 @@ module Neurogami
         File.expand_path "~/.rhesus"
       end
 
+      def self.language_appropriate_renaming path, template_var, given_value
+        # Hack to see what might work:
+        renaming_map = {
+          /\.rb$/ => :to_snake_case
+        }
+          renaming_map.each do |file_pattern, renaming_method|
+            if path =~ file_pattern
+              return path.gsub( template_var, given_value.send(renaming_method) )
+            end
+          end
+          path.gsub( template_var, given_value )
+      end
+
       # How can this be tested?  This method is more or less the core of the
       # tool (other key method: extracting the set of vars from the templates)
       # The trouble is that the code works by creating a side effect; the return
@@ -138,7 +153,9 @@ module Neurogami
         relative_path  = path.sub user_template_directory , ''
         short_path = path.sub user_template_directory, ''
         real_path = short_path.sub(template_name + '/', '')
-        var_set.each { |k,v| real_path.gsub!( k, v.to_snake_case ) }
+
+        var_set.each { |key, value| real_path = language_appropriate_renaming( real_path, key, value ) }
+        
         write_to = location + real_path 
         destination_dir = File.expand_path(File.dirname(write_to))
         FileUtils.mkdir_p destination_dir

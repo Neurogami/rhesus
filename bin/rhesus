@@ -26,7 +26,7 @@ def help(message = nil)
 end
 
 def process_template template_name
-  puts "Using template #{template_name}"
+  puts " - Using template #{template_name.inspect}"
 
   var_set = {}
 
@@ -92,20 +92,33 @@ def copy_over_default_templates
   FileUtils.cp_r File.dirname(__FILE__) + "/../default-templates/.", Neurogami::Rhesus::Core.user_template_directory
 end
 
-def generate_from_template
+def generate_from_template filter = /.*/
+  
+  filter = Regexp.new(filter) unless filter.is_a?(Regexp)
+
   if ARGV.first
-    puts "Generate from #{ARGV.first} template"
+    ARGV.first.strip!
+    t = Neurogami::Rhesus::Core.templates.find{ |t| t == ARGV.first }  
+    ARGV.clear
+    process_template  t
   else
-    Neurogami::Rhesus::Core.templates.each_with_index do |template, idx|
+    templates = {}
+    Neurogami::Rhesus::Core.templates.select{ |t| t =~ filter }.each_with_index do |template, idx|
+      templates[idx+1] = template
       puts "#{idx+1}: #{template}"
     end
-    item =  0
-    while item < 1 || item-1 > Neurogami::Rhesus::Core.templates.size
-      print "Enter the number of the template to use: "
-      item = gets.to_i
+    if templates.empty?
+      warn "No templates matched on #{filter.pretty_inspect.strip}."
+    else
+      item =  0
+      while item < 1 || item-1 > Neurogami::Rhesus::Core.templates.size
+        print "Enter the number of the template to use: "
+        item = gets.to_i
+      end
+
+      process_template templates[item] # Neurogami::Rhesus::Core.templates[item-1]
     end
 
-    process_template Neurogami::Rhesus::Core.templates[item-1]
   end
 end
 #-------------------------------------------------
@@ -127,7 +140,9 @@ else
   when '--setup'
     setup
   else
-    puts "Nothing known about #{ARGV[0]}"
+    #puts "Nothing known about #{ARGV[0]}"
+    # Treat the same as gen, but use the argument as a pattern filter to reduce the number of items show
+    generate_from_template option.strip
   end
 end
 

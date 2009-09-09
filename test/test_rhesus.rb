@@ -13,7 +13,6 @@ describe 'A rhesus directory' do
       def self.user_template_directory
          "#{$here}/.rhesus"
       end
-
     end
 
   end
@@ -53,16 +52,7 @@ describe 'The core Rhesus code' do
     vars.sort!
     vars.should  == ['adj1', 'adj2', 'adj3' ]
 
-    #    vars.include?('adj1').should == true
-    #   vars.include?('adj2').should == true
-    #  vars.include?('adj3').should == true
   end
 
 end
 
-__END__
-
-What are the key useful things we might want?
-
-* List available templates
-* Use one of those templates

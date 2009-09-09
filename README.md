@@ -24,7 +24,6 @@ The results are copied out to some dir realtive to where you invoked the 'rhesus
 FEATURES/PROBLEMS
 -----------------
 
-
 Generates files for you to jump-start projects that have common code.
 
 Makes asorted assumptions and needs more testing with a variety of template sources
@@ -45,10 +44,11 @@ Run `rhesus list` to see the available templates
 
    $ rhesus list
 
+NOTE: This behavior might vanish, since in actual use it is actually useless. See below.
+
 
 Run `rhesus gen` to generate code from a template.  You may optionally pass the name
 of a template, but if you leave that out you'll get a list to pick from.
-
 
     $ rhesus gen
     1: jimpanzee.about
@@ -57,6 +57,16 @@ of a template, but if you leave that out you'll get a list to pick from.
 
     Enter the number of the template to use: 
 
+If you pass a complete template name then that is automatically  used:
+
+    $ rhesus gen  jimpanzee.midi
+
+Run `rhesus stuff` to have rhesus show a list of templates that match on `stuff`.
+
+    $ rhesus midi
+    1: jimpanzee.midi
+
+    Enter the number of the template to use: 
 
 
 The code assumes you have a directory `.rhesus` in your home directory (+~/.rhesus+)
@@ -193,6 +203,10 @@ However, for file and folder names, variable values are snake-cased.  That's why
 A value of `FooBar`, for example,  would create `src/foo_bar/foo_bar.rb`. But the string `FooBar` would be used inside the generated files.
 
 
+
+Note:  Some of the code for auto-mangling file and path names is changing.  Initially the code was specific to Ruby apps, but it's really very handy for all sorts of things, such as Haskell projects.
+
+But these other things have different conventions; code to apply appropriate conventions is being added.
 
 
 REQUIREMENTS
