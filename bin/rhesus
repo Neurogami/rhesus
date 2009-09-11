@@ -29,6 +29,7 @@ def process_template template_name
   puts " - Using template #{template_name.inspect}"
 
   var_set = {}
+  Neurogami::Rhesus::Core.load_options  template_name
 
   Neurogami::Rhesus::Core.required_vars_for_template_set(template_name).each do |var|
     print "Value for #{var}: "
@@ -121,7 +122,9 @@ def generate_from_template filter = /.*/
 
   end
 end
+
 #-------------------------------------------------
+
 if ARGV.empty?
   help
 else
@@ -139,6 +142,9 @@ else
 
   when '--setup'
     setup
+
+  when '--install' || '-i'
+     install_template_from_repo
   else
     #puts "Nothing known about #{ARGV[0]}"
     # Treat the same as gen, but use the argument as a pattern filter to reduce the number of items show

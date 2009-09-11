@@ -23,8 +23,9 @@ PROJ.authors = 'James Britt / Neurogami'
 PROJ.email = 'james@neurogami.com'
 PROJ.url = 'http://code.neurogami.com'
 PROJ.version = Neurogami::Rhesus::VERSION
-PROJ.readme_file = 'README.md'
 PROJ.summary = "Really simple, practical code generator."
+PROJ.readme_file = 'README.md'
+
 
 
 desc "Bacon specs"

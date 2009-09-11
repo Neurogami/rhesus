@@ -1,6 +1,17 @@
 require 'rubygems'
 require 'bacon'
-require 'lib/rhesus/core'
+
+h = File.expand_path(File.dirname(__FILE__))
+$:.unshift h + '/../lib/'
+
+require 'rhesus'
+
+#require 'lib/rhesus/core'
+#require 'lib/rhesus/installer'
+
+
+require 'mockfs'
+
 
 $here = File.expand_path(File.dirname(__FILE__))
 
@@ -54,5 +65,54 @@ describe 'The core Rhesus code' do
 
   end
 
+  
+  it 'needs to know when a file with Erb is not meant to be interpolated' do
+
+    template_text = "Hey! \n<|= zoobar |> got <%= _adj1 %>, \nand I'm <%= _adj2 %> <%= _adj3 %>. And <|= goober |> mean <%= _adj2 %> <%= _adj3 %>"
+
+    vars = Neurogami::Rhesus::Core.required_vars( template_text.split( "\n"), :rhemazar )
+    vars.sort!
+    vars.should  == ['goober', 'zoobar' ]
+
+  end
+
+
+   
+  it 'needs to handle rhezamar templating' do
+
+    variables_hash =  {'zoobar' => 'Jimbo', 'goober' => 'Goober' }
+    template_text = "<|= zoobar |> got <%= _adj1 %>, \nand I'm <%= _adj2 %> <%= _adj3 %>. And <|= goober |> mean <%= _adj2 %> <%= _adj3 %>"
+    expected = "Jimbo got <%= _adj1 %>, \nand I'm <%= _adj2 %> <%= _adj3 %>. And Goober mean <%= _adj2 %> <%= _adj3 %>"
+    t = Neurogami::Rhesus::Rhezamar.new template_text
+    results = t.result variables_hash
+    results.should.equal expected
+
+    
+  end
 end
 
+describe 'The Rhesus installer' do
+  MockFS.mock = true
+
+  it 'would be super-duper if it handled a git repo URL as a means to install a new template' do
+    repo_url =  'git://github.com/Neurogami/gae.ramaze.git'
+
+    lambda { Neurogami::Rhesus::Installer.install_from_repo repo_url }.should.not.raise(Neurogami::Rhesus::InstallationError)
+
+
+  end
+
+
+#  it 'knows when a repo URL is valid' do
+#    repo_url =  'git@github.com:Neurogami/andi.git'
+#    Neurogami::Rhesus::Installer.is_valid_repo_url?(repo_url).should.equal true
+
+#  end
+
+#  it 'can pull out repo URL parts' do
+
+#   end
+
+  MockFS.mock = false
+
+end

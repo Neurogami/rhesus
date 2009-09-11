@@ -127,6 +127,28 @@ Rhesus starts with some assumptions about what files might be using Erb.  You ca
 
 By default, the file-end patterns are: `rb txt rhtml ini yml yaml Rakefile gemspec`.
 
+
+NOTE: A recent addition, and still evolving, is the use of a `.options.yaml` file in the root of a template folder.
+
+The problem is that you may have a large set files that do not need any template processing.  
+
+Worse, some files may be actual templates (or contain Erb markup) that should be copied over as-is, but would otherwise get preprocessed.
+
+a `.options.yaml` file can contain a hash of file patterns, like this
+
+
+        noparse: 
+          -  /gems/gems/rack 
+          - .git/
+
+        ignore:
+          - .git/
+
+This tells `rhesus` that any file whose template path matches on any of the items listed un `noparse` should not be parsed for tempalte variables, and simply copied over as-is.
+
+The array under `ignore` means to ignore any files or directories that match on that substring. No parsing, no copying.
+
+
 When you select a template set, Rhesus scans these files for Erb variables.  It then prompts
 you to provide values.  If you use any of these variable names in file or path names then Rhesus
 will apply those values to the names and paths when applying the template.  
@@ -138,6 +160,7 @@ will have the same value used in both.
 If a file in a template set is not among the file types that may have Erb  (e.g., jar, dll, gif)
 then it will be copied over as-is.
 
+     
 
 For example:
 
@@ -207,6 +230,17 @@ A value of `FooBar`, for example,  would create `src/foo_bar/foo_bar.rb`. But th
 Note:  Some of the code for auto-mangling file and path names is changing.  Initially the code was specific to Ruby apps, but it's really very handy for all sorts of things, such as Haskell projects.
 
 But these other things have different conventions; code to apply appropriate conventions is being added.
+
+
+NOTE: Another recent evolving features is the use of "rhamaze" templating.   
+
+Suppose you have a Ramaze project template set, with some `.xhtml` files that contain Erb markup.  You do not want Rhesus to preprocess this as Erb, but you *do* want to have some interpolated variables.
+
+So, you need to add a leading line that contains the string `RHEMAZAR` and do your rhesus variables using this syntax:
+
+     <|= my_variable |>
+
+That leading line will be skipped when processing the file.
 
 
 REQUIREMENTS
