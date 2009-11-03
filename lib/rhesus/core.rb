@@ -306,20 +306,24 @@ module Neurogami
 
       def self.call_git_clone_in_user_template_directory repo_url
         Dir.chdir(user_template_directory) do 
-           cmd = "git clone #{repo_url}"
+           cmd = "git clone #{repo_url} #{destination_directory_for_git_url repo_url}"
            puts `#{cmd}`
         end
       end
 
-      def self.destination_url_for_git repo_url
-        repo_url.split('/').last.sub( /\.git$/, '')
+      def self.destination_directory_for_git_url repo_url
+        adjust_destination_folder_name repo_url.split('/').last.sub( /\.git$/, '')
+      end
+
+      def self.adjust_destination_folder_name name
+        name.sub( /^rhesus\./, '')
       end
 
       def self.destination_folder_name repo_url
         # Hacky; we assume git, and that the last '/' part (minus '.git') is the directory
         case self.repo_type repo_url
         when :git
-          destination_url_for_git  repo_url
+          destination_directory_for_git_url  repo_url
         else
           nil # ?  What do we do? Error?
         end

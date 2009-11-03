@@ -1,3 +1,11 @@
+== 0.3.3 / 2009-11-02
+<F4>
+* All sorts of new stuff.
+* Key features: 
+** Installing tempaltes from git repo
+** Handling actual erb files in template sets
+** Beter handling of multiple programming languages
+
 == 0.1.0 / 2009-01-30
 
 * Created
