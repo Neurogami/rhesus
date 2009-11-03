@@ -14,8 +14,6 @@ module Neurogami
         end
       end
 
-
-
       def self.included(base)
         base.extend(ClassMethods)
       end

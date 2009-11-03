@@ -281,7 +281,9 @@ module Neurogami
       def self.repo_type url
         delimiter = /[:|@]/
         url_parts = url.split(delimiter, 2)
+        
         return :unknown unless url_parts.size == 2
+
         case url_parts.first.downcase
         when 'git'
           :git
@@ -295,10 +297,18 @@ module Neurogami
       # something that either works or doesn't, so that *this* method is a set of
       # tested methods
       #
-      def install_from_git repo_url
+      def self.install_from_git repo_url
         warn "Install from #{repo_url}"
         (warn "Cannot find your .rhesus directory."; return ) unless Neurogami::Rhesus::Core.user_dir_exists?
-        (warn "Destination folder already exists"; return ) if folder_name_conflict? repo_url
+        (warn "Destination folder already exists"; return ) if Neurogami::Rhesus::Core.folder_name_conflict? repo_url
+        call_git_clone_in_user_template_directory repo_url
+      end
+
+      def self.call_git_clone_in_user_template_directory repo_url
+        Dir.chdir(user_template_directory) do 
+           cmd = "git clone #{repo_url}"
+           puts `#{cmd}`
+        end
       end
 
       def self.destination_url_for_git repo_url
@@ -315,7 +325,7 @@ module Neurogami
         end
       end
 
-      def folder_name_conflict? repo_url
+      def self.folder_name_conflict? repo_url
          File.exist?  user_template_directory + '/' + destination_folder_name(repo_url)
       end
 
@@ -324,10 +334,11 @@ module Neurogami
       # git@github.com:Neurogami/Jimpanzee.git
       #
       def self.install_template_from_repo repo_url
-        case repo_type repo_url
+        case (repo_type = repo_type repo_url)
         when :unknown
-          warn "Cannot handle '{repo_url}'"
+          warn "Cannot handle '#{repo_url}'"
         else
+          STDERR.puts( ":DEBUG #{__FILE__}:#{__LINE__}   Call install_from_#{repo_type}, #{repo_url} " ) if ENV['JAMES_SCA_JDEV_MACHINE'] # JGBDEBUG 
           send "install_from_#{repo_type}", repo_url
         end
       end

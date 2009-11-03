@@ -32,7 +32,7 @@ def install_template_from_repo
     warn "No repo URL given.!"
     return
   end
-
+ STDERR.puts( ":DEBUG #{__FILE__}:#{__LINE__}  install_template_from_repo #{repo_url}" ) if ENV['JAMES_SCA_JDEV_MACHINE'] # JGBDEBUG  
   Neurogami::Rhesus::Core.install_template_from_repo repo_url
   
 end
@@ -141,9 +141,9 @@ if ARGV.empty?
 else
   option = ARGV.shift
   case option 
-  when "-h" || "--help"
+  when /-h|--help/
     help
-  when "-v" || "--version"
+  when /-v|--version/
     puts "Rhesus version #{Neurogami::Rhesus::VERSION}"
   when "list"
     puts "Templates"
@@ -152,9 +152,10 @@ else
     generate_from_template
   when '--setup'
     setup
-  when '--install' || '-i'
+  when /--install|-i/
      install_template_from_repo
   else
+    STDERR.puts( ":DEBUG #{__FILE__}:#{__LINE__} option = #{option.inspect}" ) if ENV['JAMES_SCA_JDEV_MACHINE'] # JGBDEBUG 
     #puts "Nothing known about #{ARGV[0]}"
     # Treat the same as gen, but use the argument as a pattern filter to reduce the number of items show
     generate_from_template option.strip
