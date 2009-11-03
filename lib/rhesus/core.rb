@@ -23,7 +23,6 @@ module Neurogami
 
       include Neurogami::Rhesus::Common
 
-
       ERB_RE = {
         :ruby_erb => /(<%=)\s*(\S+)\s*(%>)/,
         :rhemazar => /(<\|=\s*)(\S+)(\s*\|>)/
@@ -284,13 +283,40 @@ module Neurogami
         url_parts = url.split(delimiter, 2)
         return :unknown unless url_parts.size == 2
         case url_parts.first.downcase
-        
         when 'git'
           :git
         else
           :unknown
         end
+      end
 
+      # How do you test such a thing?
+      # How can we reduce this to a set of verifiable steps, until we get to
+      # something that either works or doesn't, so that *this* method is a set of
+      # tested methods
+      #
+      def install_from_git repo_url
+        warn "Install from #{repo_url}"
+        (warn "Cannot find your .rhesus directory."; return ) unless Neurogami::Rhesus::Core.user_dir_exists?
+        (warn "Destination folder already exists"; return ) if folder_name_conflict? repo_url
+      end
+
+      def self.destination_url_for_git repo_url
+        repo_url.split('/').last.sub( /\.git$/, '')
+      end
+
+      def self.destination_folder_name repo_url
+        # Hacky; we assume git, and that the last '/' part (minus '.git') is the directory
+        case self.repo_type repo_url
+        when :git
+          destination_url_for_git  repo_url
+        else
+          nil # ?  What do we do? Error?
+        end
+      end
+
+      def folder_name_conflict? repo_url
+         File.exist?  user_template_directory + '/' + destination_folder_name(repo_url)
       end
 
       # So far, only git.  And just these URL forms:
@@ -298,7 +324,12 @@ module Neurogami
       # git@github.com:Neurogami/Jimpanzee.git
       #
       def self.install_template_from_repo repo_url
-          
+        case repo_type repo_url
+        when :unknown
+          warn "Cannot handle '{repo_url}'"
+        else
+          send "install_from_#{repo_type}", repo_url
+        end
       end
 
 

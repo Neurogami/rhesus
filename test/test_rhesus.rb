@@ -106,6 +106,10 @@ describe 'The Rhesus installer' do
 
   end
 
+it 'determines the destination folder name from the repo URL' do
+    repo_url =  'git://github.com/Neurogami/gae.ramaze.git'
+    Neurogami::Rhesus::Core.destination_folder_name(repo_url).should.equal "gae.ramaze"
+end
 
   it 'would be super-duper if it handled a git repo URL as a means to install a new template' do
     repo_url =  'git://github.com/Neurogami/gae.ramaze.git'
