@@ -27,8 +27,8 @@ module Neurogami
       ERB_RE = {
         :ruby_erb => /(<%=)\s*(\S+)\s*(%>)/,
         :rhemazar => /(<\|=\s*)(\S+)(\s*\|>)/
+      } unless const_defined?(:ERB_RE) 
 
-      }
       # http://refactormycode.com/codes/281-given-a-hash-of-variables-render-an-erb-template
       @@m = Module.new do
         class << self
@@ -279,17 +279,33 @@ module Neurogami
 
       end
 
+      def self.repo_type url
+        delimiter = /[:|@]/
+        url_parts = url.split(delimiter, 2)
+        return :unknown unless url_parts.size == 2
+        case url_parts.first.downcase
+        
+        when 'git'
+          :git
+        else
+          :unknown
+        end
+
+      end
+
+      # So far, only git.  And just these URL forms:
+      # git://github.com/Neurogami/Jimpanzee.git
+      # git@github.com:Neurogami/Jimpanzee.git
+      #
+      def self.install_template_from_repo repo_url
+          
+      end
+
 
       def self.rename full_file_path
         ts = Time.now.to_i.to_s
         FileUtils.mv full_file_path, full_file_path + '.' + ts 
       end
-
-
-
-
-
-
 
       # Hacky :( FIXME Add a better way to define what files get slurped for parsing
       haz_vars = %w{ rb txt rhtml ini yml yaml Rakefile rake gemspec feature}

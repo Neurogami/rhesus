@@ -25,6 +25,18 @@ def help(message = nil)
   ENDL
 end
 
+
+def install_template_from_repo
+  repo_url = ARGV.first.strip
+  if repo_url.empty?
+    warn "No repo URL given.!"
+    return
+  end
+
+  Neurogami::Rhesus::Core.install_template_from_repo repo_url
+  
+end
+
 def process_template template_name
   puts " - Using template #{template_name.inspect}"
 
@@ -83,9 +95,8 @@ def setup
 end
 
 def create_rhesus_dir
-  return if Neurogami::Rhesus::Core.user_dir_exists?
+  (warn "The .rhesus directory already exists."; return) if Neurogami::Rhesus::Core.user_dir_exists?
   FileUtils.mkdir_p  Neurogami::Rhesus::Core.user_template_directory
-
 end
 
 def copy_over_default_templates
@@ -139,10 +150,8 @@ else
     list_templates
   when "gen"
     generate_from_template
-
   when '--setup'
     setup
-
   when '--install' || '-i'
      install_template_from_repo
   else

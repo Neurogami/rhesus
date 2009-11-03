@@ -94,6 +94,19 @@ end
 describe 'The Rhesus installer' do
   MockFS.mock = true
 
+  it 'determines the repo type from a given URL' do
+    repo_url = 'git://github.com/Neurogami/gae.ramaze.git'
+    Neurogami::Rhesus::Core.repo_type(repo_url).should.equal :git
+    repo_url = 'svn://foohub.com/Neurogami/gae.ramaze'
+    Neurogami::Rhesus::Core.repo_type(repo_url).should.equal :unknown
+    repo_url = 'git@github.com:Neurogami/Jimpanzee.git'
+    Neurogami::Rhesus::Core.repo_type(repo_url).should.equal :git
+    repo_url = 'git#foohub.com/Neurogami/gae.ramaze'
+    Neurogami::Rhesus::Core.repo_type(repo_url).should.equal :unknown
+
+  end
+
+
   it 'would be super-duper if it handled a git repo URL as a means to install a new template' do
     repo_url =  'git://github.com/Neurogami/gae.ramaze.git'
 

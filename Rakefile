@@ -30,7 +30,7 @@ PROJ.readme_file = 'README.md'
 
 desc "Bacon specs"
 task 'test:bacon' do
-  sh "bacon test/test_rhesus.rb"
+  sh "bacon test/*.rb"
 end
 
 
