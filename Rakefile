@@ -25,6 +25,9 @@ PROJ.url = 'http://code.neurogami.com'
 PROJ.version = Neurogami::Rhesus::VERSION
 PROJ.summary = "Really simple, practical code generator."
 PROJ.readme_file = 'README.md'
+  PROJ.signing_key = '/home/james/ngprojects/gem-private_key.pem'
+  PROJ.cert_chain  = ['gem-public_cert.pem']
+
 
 
 

@@ -10,7 +10,7 @@ DESCRIPTION
 
 Rhesus is a tool for copying over pre-built templates with optional embedded string interpolation.
 
-It started as a way to make jump-starting [Jipmanzee](http://neurogami.github.com/Jimpanzee/) apps easier, but the user-defined templates need not have anything to do with any special library or programming language.
+It started as a way to make jump-starting [Jimpanzee](http://neurogami.github.com/Jimpanzee/) apps easier, but the user-defined templates need not have anything to do with any special library or programming language.
 
 Basically, you create a skeleton of the files you want as templates in some suitably-named subdirectory of ~/.rhesus.
 

@@ -9,16 +9,6 @@ def template_base_dir
   File.expand_path( File.join( File.dirname(__FILE__), '..', 'templates' ) )
 end
 
-#def copy_over_prebuilt_template base_path, name
-#  %w{model view controller ui}.each do |unit|
-#    FileUtils.mkdir_p File.join(base_path, name)
-#    from = File.join( template_base_dir, name , name + '_' + unit + '.rb')
-#    dest = File.join(base_path, name, name + '_' + unit + '.rb' )
-#    warn "cp '#{from}' to '#{dest}'"
-#    FileUtils.cp from, dest 
-#  end
-#end
-
 def setup_directory path
   FileUtils.mkdir_p path.gsub("\\", "/")
   FileUtils.cd path

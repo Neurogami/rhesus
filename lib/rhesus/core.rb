@@ -79,9 +79,6 @@ module Neurogami
         }
       end
 
-      def self.tuple_base_name_pair name
-        [snake_case(name), camelize(name)]
-      end
 
 
       # Trouble: Suppose your template set includes a file, index.xhtml, and 
@@ -180,11 +177,17 @@ module Neurogami
         end
       end
 
-
+      # Yikes.  There is a real problem here.  This code might alter the
+      # path based on file patterns.  The thing is, it gets called for the same
+      # path for each file in it.  It's possible then to get files ending up
+      # in two different detination folders because the files it holds map
+      # to different renaming. :(
       def self.language_appropriate_renaming path, template_var, given_value
         # Hack to see what might work:
         renaming_map = {
-          /\.rb$/ => :to_snake_case
+          /\.rb$/ => :to_snake_case,
+          /\.xhtml$/ => :to_snake_case,
+          /\.rhtml$/ => :to_snake_case
         }
         renaming_map.each do |file_pattern, renaming_method|
           if path =~ file_pattern
@@ -206,14 +209,28 @@ module Neurogami
 
       def self.process template_name, var_set, location, path
         relative_path  = path.sub user_template_directory , ''
+        
         short_path = path.sub user_template_directory, ''
+        
+        warn "We have short_path  = #{short_path.inspect}" # JGBDEBUG
+        warn "We have template_name  = #{template_name.inspect}" # JGBDEBUG
+
         real_path = short_path.sub(template_name + '/', '')
 
         return if ignore(path, @@options['ignore'])
 
+        # This is broken.  We can end up with different real_path values for the same dir
+        # for each file in that dir.  Need to look at the files in a dir, determine the
+        # renaming pattern, and appy and use that *once*.
+        # Or (but this is cheesy clever) have language_appropriate_renaming return a 
+        # value after looking at *all* the files in a folder.  Hooray for redundant code execution!
         var_set.each { |key, value| real_path = language_appropriate_renaming( real_path, key, value ) }
 
         write_to = location + real_path 
+        
+        warn "We have location  = #{location.inspect}" # JGBDEBUG
+        warn "We have real_path  = #{real_path.inspect}" # JGBDEBUG
+
         destination_dir = File.expand_path(File.dirname(write_to))
         FileUtils.mkdir_p destination_dir
         file_to_write_to  = File.expand_path write_to
@@ -233,17 +250,14 @@ module Neurogami
             erb = :rhemazar
             source_text.shift
           end
-
           text = process_template source_text.join, var_set, erb
           warn "Create #{file_to_write_to}"
-
           File.open(file_to_write_to, "w"){|f| f.puts text }
         else
           warn "Copy #{path} to #{file_to_write_to}"
           FileUtils.cp path, file_to_write_to
         end
       end
-
 
       def self.ignore path, ignore_filters 
         return false if ignore_filters.nil?  || ignore_filters.empty?
@@ -252,6 +266,7 @@ module Neurogami
         end
         false
       end
+
       def self.no_parse path,  no_parse_filters = []
         return false if no_parse_filters.nil? or no_parse_filters.empty?
         no_parse_filters.each do |patt|
