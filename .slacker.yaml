@@ -1,0 +1,42 @@
+:pivotal_project_id: 72892
+:valid_requesters:
+  - "James Britt"
+
+# The code requires a pivotal tracker API value and a project ID
+# If you include a list of valid requesters, then the list will be used to 
+# constrain what a user can enter when adding a story from the command line
+#
+# You can set the API and project ID values in two ways.
+# One use this config file.
+#
+# The other is to use ENV values:
+#
+#  PIVOTAL_API
+#
+# and
+#  
+#  PIVOTAL_STORY_ID_the_name_of_project_directory
+#
+# The first should be obvious how to use
+#
+# The second works like this:
+#
+#  You invoke the command line tool in the root of your project folder.
+#  This is where you would store some version of this very file, for example.
+#  Suppose the directory is named 'super_cool_app'
+#
+# Set an ENV value to associate a project ID (in bash_profile or someplace):
+#
+#    PIVOTAL_STORY_ID_super_cool_app=0099009 
+#    export PIVOTAL_STORY_ID_super_cool_app
+#   
+# The advantage of using an ENV value for the API key is so you do not have to 
+# repeat it in numerous places.  
+#
+# The general value of using ENV values is so that you aren't storing things in
+# files others might easily read (if that matters to you).
+#
+# The values in the conf file override the ENV values, so you can mix and match as 
+# you see fit.
+
+
