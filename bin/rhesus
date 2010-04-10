@@ -20,7 +20,7 @@ def help(message = nil)
         lists available templates.
 
       gen <template-name>
-        Generates files fom given template name.
+        Generates files from the given template name.
 
   ENDL
 end

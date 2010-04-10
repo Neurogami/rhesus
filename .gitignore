@@ -1,0 +1,4 @@
+pkg/**/*
+doc/**/*
+tasks/neurogami.task
+*.gem

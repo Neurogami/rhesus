@@ -3,6 +3,8 @@ module Neurogami
 
     module Common
 
+      RHESUS_OPTIONS_FILE = '.rhesus-options.yaml'
+
       module ClassMethods
 
         def user_dir_exists?

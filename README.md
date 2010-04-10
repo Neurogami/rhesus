@@ -154,13 +154,13 @@ By default, the file-end patterns are: `rb txt rhtml ini yml yaml Rakefile gemsp
 
 ### Note
 
-A recent addition, and still evolving, is the use of a `.options.yaml` file in the root of a template folder.
+A recent addition, and still evolving, is the use of a `.rhesus-options.yaml` file in the root of a template folder.
 
 This is because you may have a large set files that do not need any template processing.  
 
 Worse, some files may be themselves Erb templates (or contain Erb markup) that should be copied over as-is, but would otherwise get preprocessed by rhesus.
 
-a `.options.yaml` file can contain a hash of file patterns, like this
+a `.rhesus-options.yaml` file can contain a hash of file patterns, like this
 
 
         noparse: 

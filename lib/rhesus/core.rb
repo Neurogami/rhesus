@@ -177,19 +177,18 @@ module Neurogami
         end
       end
 
-      # Yikes.  There is a real problem here.  This code might alter the
-      # path based on file patterns.  The thing is, it gets called for the same
-      # path for each file in it.  It's possible then to get files ending up
-      # in two different detination folders because the files it holds map
-      # to different renaming. :(
+
       def self.language_appropriate_renaming path, template_var, given_value
-        # Hack to see what might work:
-        renaming_map = {
-          /\.rb$/ => :to_snake_case,
-          /\.xhtml$/ => :to_snake_case,
-          /\.rhtml$/ => :to_snake_case
-        }
-        renaming_map.each do |file_pattern, renaming_method|
+
+        if @@options['language'] && Config::LANGUAGE_RENAMING_MAP[@@options['language']] 
+          renaming_method = Config::LANGUAGE_RENAMING_MAP[@@options['language']] 
+          warn "Have language directive, using #{renaming_method.inspect}"
+          return path.gsub( template_var, given_value.send(renaming_method) )
+        else
+          warn "Have no language directive in  #{@@options.inspect}"
+        end
+
+        Config::FILE_TYPE_RENAMING_MAP.each do |file_pattern, renaming_method|
           if path =~ file_pattern
             return path.gsub( template_var, given_value.send(renaming_method) )
           end
@@ -209,9 +208,9 @@ module Neurogami
 
       def self.process template_name, var_set, location, path
         relative_path  = path.sub user_template_directory , ''
-        
+
         short_path = path.sub user_template_directory, ''
-        
+
         warn "We have short_path  = #{short_path.inspect}" # JGBDEBUG
         warn "We have template_name  = #{template_name.inspect}" # JGBDEBUG
 
@@ -227,7 +226,7 @@ module Neurogami
         var_set.each { |key, value| real_path = language_appropriate_renaming( real_path, key, value ) }
 
         write_to = location + real_path 
-        
+
         warn "We have location  = #{location.inspect}" # JGBDEBUG
         warn "We have real_path  = #{real_path.inspect}" # JGBDEBUG
 
@@ -278,14 +277,14 @@ module Neurogami
       def self.load_options template_name
         full_path = user_template_directory + '/' + template_name 
 
-        @@options ||= if File.exist? full_path+ '/.options.yaml'
-                        o = YAML.load(IO.read( full_path + '/.options.yaml'))
-          o['noparse'] ||= []
-          o['noparse'].map!{ |patt| Regexp.new(Regexp.escape(patt)) }
-          o['ignore'] ||= []
-          o['ignore'] << '.options.yaml'
-          o['ignore'].map!{ |patt| Regexp.new(Regexp.escape(patt)) }
-          o
+        @@options ||= if File.exist? full_path + '/' + RHESUS_OPTIONS_FILE
+                        o = YAML.load(IO.read( full_path + '/' + RHESUS_OPTIONS_FILE))
+                        o['noparse'] ||= []
+                        o['noparse'].map!{ |patt| Regexp.new(Regexp.escape(patt)) }
+                        o['ignore'] ||= []
+                        o['ignore'] << RHESUS_OPTIONS_FILE
+                        o['ignore'].map!{ |patt| Regexp.new(Regexp.escape(patt)) }
+                        o
                       else
                         {}
                       end
@@ -296,7 +295,7 @@ module Neurogami
       def self.repo_type url
         delimiter = /[:|@]/
         url_parts = url.split(delimiter, 2)
-        
+
         return :unknown unless url_parts.size == 2
 
         case url_parts.first.downcase
@@ -321,8 +320,8 @@ module Neurogami
 
       def self.call_git_clone_in_user_template_directory repo_url
         Dir.chdir(user_template_directory) do 
-           cmd = "git clone #{repo_url} #{destination_directory_for_git_url repo_url}"
-           puts `#{cmd}`
+          cmd = "git clone #{repo_url} #{destination_directory_for_git_url repo_url}"
+          puts `#{cmd}`
         end
       end
 
@@ -345,7 +344,7 @@ module Neurogami
       end
 
       def self.folder_name_conflict? repo_url
-         File.exist?  user_template_directory + '/' + destination_folder_name(repo_url)
+        File.exist?  user_template_directory + '/' + destination_folder_name(repo_url)
       end
 
       # So far, only git.  And just these URL forms:
