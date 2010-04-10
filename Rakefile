@@ -4,13 +4,8 @@
 
 begin
   require 'bones'
-  Bones.setup
 rescue LoadError
-  begin
-    load 'tasks/setup.rb'
-  rescue LoadError
-    raise RuntimeError, '### please install the "bones" gem ###'
-  end
+  abort '### Please install the "bones" gem ###'
 end
 
 ensure_in_path 'lib'
@@ -18,18 +13,25 @@ require 'version'
 
 task :default => 'test:bacon'
 
-PROJ.name = 'rhesus'
-PROJ.authors = 'James Britt / Neurogami'
-PROJ.email = 'james@neurogami.com'
-PROJ.url = 'http://code.neurogami.com'
-PROJ.version = Neurogami::Rhesus::VERSION
-PROJ.summary = "Really simple, practical code generator."
-PROJ.readme_file = 'README.md'
-  PROJ.signing_key = '/home/james/ngprojects/gem-private_key.pem'
-  PROJ.cert_chain  = ['gem-public_cert.pem']
+@dev_sites = %w{
 
+    http://www.pivotaltracker.com/projects/72892
+  }
+Bones {
 
+  name  'rhesus'
+  authors  'James Britt / Neurogami'
+  email  'james@neurogami.com'
+  url  'http://code.neurogami.com'
+  version  Neurogami::Rhesus::VERSION
+  summary  "Really simple, practical code generator."
+  readme_file  'README.md'
 
+  gem.extras[:signing_key] =  ENV['GEM_CERT_DIR'] + '/gem-private_key.pem'
+  gem.extras[:cert_chain]  = ['gem-public_cert.pem']
+  ignore_file = %w{ __ .bnsignore}  
+
+}
 
 desc "Bacon specs"
 task 'test:bacon' do
@@ -127,13 +129,13 @@ issues:
   updated_at: 2009-08-25 10:16:28 -07:00
   body: |-
     Running 
-    
+
          rhesus list
-    
+
     or 
-    
+
         rhesus gen
-    
+
     gives a full list of available templates, which can get too big to be useful.
   title: CLI UI won't scale
   number: 2
