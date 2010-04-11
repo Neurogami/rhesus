@@ -5,13 +5,13 @@ require File.expand_path(File.join(File.dirname(__FILE__), %w[.. lib version]))
 
 require 'fileutils'
 
-def help(message = nil)
+def help message = nil
   puts message + "\\\n-----------------------------------\\\n" unless message.nil?
   puts <<-ENDL
   Usage:
       rhesus -h/--help
       rhesus -v/--version
-  
+
       rhesus --setup
 
       rhesus command [options]
@@ -20,10 +20,9 @@ def help(message = nil)
       list 
         lists available templates.
 
-      --install 
-        Installs a new template folder from a repository.  (Git only so far)
+      --install <repo url>
+        Installs a new template folder from a repository.  (Git only, so far)
 
-  
       gen <template-name>
         Generates files from the given template name.
 
@@ -37,9 +36,7 @@ def install_template_from_repo
     warn "No repo URL given.!"
     return
   end
- STDERR.puts( ":DEBUG #{__FILE__}:#{__LINE__}  install_template_from_repo #{repo_url}" ) if ENV['JAMES_SCA_JDEV_MACHINE'] # JGBDEBUG  
   Neurogami::Rhesus::Core.install_template_from_repo repo_url
-  
 end
 
 def process_template template_name
@@ -109,8 +106,19 @@ def copy_over_default_templates
   FileUtils.cp_r File.dirname(__FILE__) + "/../default-templates/.", Neurogami::Rhesus::Core.user_template_directory
 end
 
+
+
+def template_selection_range indexed_templates_hash
+  if indexed_templates_hash.keys.size == 1
+        "1 is the only choice"
+  else
+        "1 to #{indexed_templates_hash.keys.size}"
+  end
+end
+
+
 def generate_from_template filter = /.*/
-  
+
   filter = Regexp.new(filter) unless filter.is_a?(Regexp)
 
   if ARGV.first
@@ -128,16 +136,25 @@ def generate_from_template filter = /.*/
       warn "No templates matched on #{filter.pretty_inspect.strip}."
     else
       item =  0
-      while item < 1 || item-1 > Neurogami::Rhesus::Core.templates.size
-        print "Enter the number of the template to use: "
-        item = gets.to_i
+      while item < 1 || item > templates.size
+
+        print "Enter the number of the template to use (#{template_selection_range templates}), or q to quit: "
+
+        item = gets
+        if item =~  /q/i
+          puts "OK, quitting."
+          exit
+        else
+          item = item.to_i
+        end
       end
 
-      process_template templates[item] # Neurogami::Rhesus::Core.templates[item-1]
+      process_template templates[item]
     end
 
   end
 end
+
 
 #-------------------------------------------------
 
@@ -158,9 +175,8 @@ else
   when '--setup'
     setup
   when /--install|-i/
-     install_template_from_repo
+    install_template_from_repo
   else
-    STDERR.puts( ":DEBUG #{__FILE__}:#{__LINE__} option = #{option.inspect}" ) if ENV['JAMES_SCA_JDEV_MACHINE'] # JGBDEBUG 
     #puts "Nothing known about #{ARGV[0]}"
     # Treat the same as gen, but use the argument as a pattern filter to reduce the number of items show
     generate_from_template option.strip
