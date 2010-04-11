@@ -11,6 +11,7 @@ def help(message = nil)
   Usage:
       rhesus -h/--help
       rhesus -v/--version
+  
       rhesus --setup
 
       rhesus command [options]
@@ -19,6 +20,10 @@ def help(message = nil)
       list 
         lists available templates.
 
+      --install 
+        Installs a new template folder from a repository.  (Git only so far)
+
+  
       gen <template-name>
         Generates files from the given template name.
 
@@ -27,7 +32,7 @@ end
 
 
 def install_template_from_repo
-  repo_url = ARGV.first.strip
+  repo_url = ARGV.first.to_s.strip
   if repo_url.empty?
     warn "No repo URL given.!"
     return

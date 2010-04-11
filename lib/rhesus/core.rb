@@ -319,14 +319,20 @@ module Neurogami
       end
 
       def self.call_git_clone_in_user_template_directory repo_url
+        warn "cd to '#{user_template_directory}' ..."
         Dir.chdir(user_template_directory) do 
-          cmd = "git clone #{repo_url} #{destination_directory_for_git_url repo_url}"
+          git_dest = destination_directory_for_git_url repo_url
+          cmd = "git clone #{repo_url} #{git_dest}"
+          warn "Calling '#{cmd}'"
           puts `#{cmd}`
         end
       end
 
+     # git@neurogami.com:example.rhesus_template
       def self.destination_directory_for_git_url repo_url
-        adjust_destination_folder_name repo_url.split('/').last.sub( /\.git$/, '')
+        d = repo_url.split('/').last.sub( /\.git$/, '')
+        d = d.split( ':', 2).last
+        adjust_destination_folder_name d
       end
 
       def self.adjust_destination_folder_name name
