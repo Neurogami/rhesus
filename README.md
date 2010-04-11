@@ -31,6 +31,10 @@ Makes assorted assumptions and needs more testing with a variety of template sou
 
 Driven by the Works for James criteria.  Feedback is welcome.
 
+Bugs are being tracked on [Pivotal Tracker](http://www.pivotaltracker.com/projects/72892)
+
+Issues added to the GitHub issues sections should get moved there as well.
+
 
 SYNOPSIS
 --------
@@ -81,16 +85,27 @@ of a template, but if you leave that out you'll get a list to pick from.
 
     Enter the number of the template to use: 
 
-If you pass a complete template name then that is automatically  used:
+If you pass a complete template name then that is automatically used:
 
     $ rhesus gen  jimpanzee.midi
 
-Run `rhesus stuff` to have rhesus show a list of templates that match on `stuff`.
+Run `rhesus <whatever>` to have rhesus show a list of templates that match on `<whatever>`.
 
     $ rhesus midi
     1: jimpanzee.midi
 
-    Enter the number of the template to use: 
+    Enter the number of the template to use (1 is the only choice), or q to quit: 
+
+
+or
+
+
+    $ rhesus rama
+    1: gae.ramaze
+    2: ramaze.tuple
+    3: ramaze.base
+    Enter the number of the template to use (1 to 3), or q to quit: 
+ 
 
 
 #### Template structure
@@ -174,6 +189,13 @@ This tells `rhesus` that any file whose template path matches on any of the item
 
 The array under `ignore` means to ignore any files or directories that match on that substring. No parsing, no copying.
 
+Rhesus makes some assumptions about how to apply names to files and directories.  It is not always so smart.
+
+If your options file includes a `language` entry then that will be used to drive how things get named.
+
+(Basically, whether or not everything gets converted to sname_case.)
+
+As of version 0.4.0 the only language it knows is `ruby`.
 
 ### Template variables
 
@@ -281,7 +303,7 @@ You can also install templates from a git repository:
 
 or
 
-    $ rhesus --install git://gitistan.org/Neurogami/super.bader.template.git
+    $ rhesus --install git://gitistan.org/Neurogami/super.badder.template.git
 
 
 Rhesus will do a straight-up `git clone` to fetch the files.  If the repo name begins with `rhesus.` (e.g. `git://gitistan.org/Neurogami/rhesus.ramaze.basic`) then that leading string gets stripped from the destination folder (`ramaze.basic`).

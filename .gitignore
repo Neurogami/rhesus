@@ -2,3 +2,26 @@ pkg/**/*
 doc/**/*
 tasks/neurogami.task
 *.gem
+.ghcache
+ .ghissues
+ .gitignore
+ .slacker.yaml
+ .yardoc
+ __
+ __issues.json
+ __issues.yaml
+ _x.rb
+ coverage
+ coverage/**/*
+ gem-private_key.pem
+ gem-public_cert.pem
+ gh-test.rb
+ issues.yaml
+ lib/doc
+ lib/doc/**/*
+ makespec.rb
+ notes.rc
+ tasks/neurogami.rake
+ tasks/slacker.rake
+ 
+ 

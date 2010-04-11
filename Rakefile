@@ -14,22 +14,21 @@ require 'version'
 task :default => 'test:bacon'
 
 @dev_sites = %w{
-
     http://www.pivotaltracker.com/projects/72892
   }
-Bones {
 
+Bones {
   name  'rhesus'
-  authors  'James Britt / Neurogami'
-  email  'james@neurogami.com'
-  url  'http://code.neurogami.com'
-  version  Neurogami::Rhesus::VERSION
-  summary  "Really simple, practical code generator."
+  authors      'James Britt / Neurogami'
+  email        'james@neurogami.com'
+  url          'http://code.neurogami.com'
+  version      Neurogami::Rhesus::VERSION
+  summary      "Really simple, practical code generator."
+  description  "Really simple, practical code generator. Really."
   readme_file  'README.md'
 
-  gem.extras[:signing_key] =  ENV['GEM_CERT_DIR'] + '/gem-private_key.pem'
-  gem.extras[:cert_chain]  = ['gem-public_cert.pem']
-  ignore_file = %w{ __ .bnsignore}  
+#  gem.extras[:signing_key] =  ENV['GEM_CERT_DIR'] + '/gem-private_key.pem'
+#  gem.extras[:cert_chain]  = ['gem-public_cert.pem']
 
 }
 
