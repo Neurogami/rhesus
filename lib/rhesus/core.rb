@@ -210,10 +210,6 @@ module Neurogami
         relative_path  = path.sub user_template_directory , ''
 
         short_path = path.sub user_template_directory, ''
-
-        warn "We have short_path  = #{short_path.inspect}" # JGBDEBUG
-        warn "We have template_name  = #{template_name.inspect}" # JGBDEBUG
-
         real_path = short_path.sub(template_name + '/', '')
 
         return if ignore(path, @@options['ignore'])
@@ -226,9 +222,6 @@ module Neurogami
         var_set.each { |key, value| real_path = language_appropriate_renaming( real_path, key, value ) }
 
         write_to = location + real_path 
-
-        warn "We have location  = #{location.inspect}" # JGBDEBUG
-        warn "We have real_path  = #{real_path.inspect}" # JGBDEBUG
 
         destination_dir = File.expand_path(File.dirname(write_to))
         FileUtils.mkdir_p destination_dir
@@ -362,7 +355,6 @@ module Neurogami
         when :unknown
           warn "Cannot handle '#{repo_url}'"
         else
-          STDERR.puts( ":DEBUG #{__FILE__}:#{__LINE__}   Call install_from_#{repo_type}, #{repo_url} " ) if ENV['JAMES_SCA_JDEV_MACHINE'] # JGBDEBUG 
           send "install_from_#{repo_type}", repo_url
         end
       end
@@ -374,7 +366,7 @@ module Neurogami
       end
 
       # Hacky :( FIXME Add a better way to define what files get slurped for parsing
-      haz_vars = %w{ rb txt rhtml ini yml yaml Rakefile rake gemspec feature}
+      haz_vars = %w{ rb txt rhtml ini yml yaml Rakefile rake gemspec feature md hs Nemesis  xml java}
       add_user_haz_vars haz_vars 
       @@re = haz_vars.map { |x|   x + '$' }.join( '|') 
       @@re = Regexp.new "(#{@@re})$"

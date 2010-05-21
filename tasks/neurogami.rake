@@ -9,9 +9,7 @@ end
 
 
 def browse_to sites, browser = :ff
-
   sites = [sites] if sites.is_a?(String)
-
   cmd = case browser
         when :ff
           site_list  = sites.map{|s| " '" + s  + "'" }.join(' ')
@@ -27,8 +25,9 @@ def browse_to sites, browser = :ff
 
   Thread.new {
     warn "Opening #{cmd} ..."
-      `#{cmd}` }
-      sleep 5
+    `#{cmd}` 
+  }
+  sleep 5
 end
 
 namespace :ng do
