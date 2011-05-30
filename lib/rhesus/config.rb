@@ -10,7 +10,8 @@ module Neurogami
 
       LANGUAGE_RENAMING_MAP = {
            'ruby' => :to_snake_case,
-           'rb' => :to_snake_case
+           'rb' => :to_snake_case,
+          'processing' => :identity
       }
 
     end

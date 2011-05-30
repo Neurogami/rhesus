@@ -1,5 +1,6 @@
 require 'pp'
 require 'erb'
+require 'yaml'
 
 
 class String
@@ -9,6 +10,10 @@ class String
 
   def to_camel_case
     camelize self
+  end
+
+  def identity
+    self
   end
 
   #def identifier_to_path!
@@ -116,7 +121,6 @@ module Neurogami
 
           file_lines = IO.readlines path
           top_line = file_lines.first
-
           erb = :ruby_erb 
           if top_line =~ /RHEMAZAR/  
             file_lines.shift
@@ -140,9 +144,9 @@ module Neurogami
 
         if erb_style == :rhemazar
         end
+
         vars = []
         file_lines.each do |l|
-          # XXX
           re = ERB_RE[erb_style]
           _v = l.scan( ERB_RE[erb_style] ).map do |m| 
             m[1].strip.split('.').first

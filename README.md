@@ -193,7 +193,7 @@ Rhesus makes some assumptions about how to apply names to files and directories.
 
 If your options file includes a `language` entry then that will be used to drive how things get named.
 
-(Basically, whether or not everything gets converted to sname_case.)
+(Basically, whether or not everything gets converted to snake_case.)
 
 As of version 0.4.0 the only language it knows is `ruby`.
 
