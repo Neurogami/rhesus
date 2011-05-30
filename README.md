@@ -1,22 +1,28 @@
 rhesus
 =======
 
-    by James Britt / Neurogami 
-    http://www.neurogami.com
-    james@neurogami.com
+[James Britt / Neurogami](http://www.neurogami.com)
+
+james@neurogami.com
+
 
 DESCRIPTION
 -----------
 
 Rhesus is a tool for copying over pre-built templates with optional embedded string interpolation.
 
-It started as a way to make jump-starting [Jimpanzee](http://neurogami.github.com/Jimpanzee/) apps easier, but the user-defined templates need not have anything to do with any special library or programming language.
+It started as a way to make jump-starting [Jimpanzee](http://neurogami.github.com/Jimpanzee/)  (and now 
+[Monkeybars](http://www.monkeybars.org) apps easier, but the user-defined templates need not have 
+anything to do with any special library or programming language.
 
-Basically, you create a skeleton of the files you want as templates in some suitably-named subdirectory of ~/.rhesus.
+Basically, you create a skeleton of the directories and files you want for a template in some suitably-named 
+subdirectory of ~/.rhesus.
 
-If any of those files contain Erb variables, they will be used to prompt the user for real values when that template is used to generate files and directories.
+If any of those files contain [Erb](http://www.ruby-doc.org/stdlib/libdoc/erb/rdoc/classes/ERB.html) variables, 
+they will be used to prompt the user for real values when that template is used to generate files and directories.
 
-The same value gets applied in all cases where that variable is used. Some magic is used to handle proper casing for class and file names.
+The same value gets applied in all cases where that variable is used. Some magic is used to handle proper casing 
+for class and file names.
 
 The results are copied out to a directory relative to where you invoked the 'rhesus' script.
 
@@ -27,13 +33,12 @@ FEATURES/PROBLEMS
 
 Generates files for you to jump-start projects that have common code.
 
-Makes assorted assumptions and needs more testing with a variety of template sources
+Makes assorted assumptions and needs more testing with a variety of template sources.
 
-Driven by the Works for James criteria.  Feedback is welcome.
+Driven by the _Works for James_ criteria.  Feedback is welcome.
 
 Bugs are being tracked on [Pivotal Tracker](http://www.pivotaltracker.com/projects/72892)
 
-Issues added to the GitHub issues sections should get moved there as well.
 
 
 SYNOPSIS
@@ -51,7 +56,6 @@ Then install the gem:
 
 Or, pass the gem source as part of the command:
 
-
    $ sudo gem i rhesus ––source http://gems.neurogami.com
 
 Then run the rhesus setup option:
@@ -61,19 +65,21 @@ Then run the rhesus setup option:
 
 This should create a `.rhesus` folder in your home directory.  This is where you store you templates, each in its own containing folder.
 
+The default set-up includes a simple template example, `basic.class`, that defines a basic class. Really.
+
 
 ### Basic usage
 
-To use templates, cd to an existing project, or wherever you want to splat out the generated code. For example, start a new jimpanzee application:
+To use templates, cd to an existing project, or wherever you want to splat out the generated code. For example, start a new monkeybars application:
 
-   $ jimpanzee cool-app
+   $ monkeybars cool-app
    $ cd cool-app
 
 Run `rhesus list` to see the available templates
 
    $ rhesus list
 
-NOTE: This behavior might vanish, since in actual use it is pretty useless. See below.
+NOTE: This behavior might vanish, since in actual use it ends up being pretty useless. See below.
 
 Run `rhesus gen` to generate code from a template.  You may optionally pass the name
 of a template, but if you leave that out you'll get a list to pick from.
@@ -106,6 +112,14 @@ or
     3: ramaze.base
     Enter the number of the template to use (1 to 3), or q to quit: 
  
+
+ Some comments on this:  First,  the `list` and `gen` commands are awkward onc eyou have more than 10 or 15 templates
+ because they give you the complete list of all available templates.  There is no list paging or navigation.
+
+ In practice you will find that, so long as you have given the templates reasoanbale names, you
+ will get a list of template candidates by passing in a template name, or part of a name (see above).
+
+ The `list` and `gen` commands are handy if you forgot what things are called.
 
 
 #### Template structure
@@ -159,17 +173,26 @@ Each set is just a top-level directory containing the skeleton files and directo
             `-- spinner_dialog.rb
 
 
-What you call these directories is up to you; there is no code in place to do anything clever with the names (such
-as grouping projects and templates).  But something like that may be added if managing growing numbers of templates
-becomes an issue.  So, the suggested format is `project_type.template_name`
 
-Rhesus starts with some assumptions about what files might be using Erb.  You can add your own file patterns (sort of) by placing a `haz_vars.txt` file in your `.rhesus` folder.
+What you call these directories is up to you; there is no code in place to do anything clever with the names (such
+as grouping projects and templates).  
+
+The suggested format is `project_type.template_name`. For example:
+
+    processing.android
+    ramaze.basic
+    ramaze.user_auth
+    haskell.main
+
+
+Rhesus starts with some assumptions about what files might be using Erb.  You can add your own file patterns (sort of) 
+by placing a `haz_vars.txt` file in your `.rhesus` folder.
 
 By default, the file-end patterns are: `rb txt rhtml ini yml yaml Rakefile gemspec`.
 
 ### Note
 
-A recent addition, and still evolving, is the use of a `.rhesus-options.yaml` file in the root of a template folder.
+A still-evolving feature is the use of a `.rhesus-options.yaml` file in the root of a template folder.
 
 This is because you may have a large set files that do not need any template processing.  
 
