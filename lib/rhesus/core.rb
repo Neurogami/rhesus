@@ -1,5 +1,6 @@
 require 'pp'
 require 'erb'
+require 'yaml'
 
 
 class String
@@ -9,6 +10,10 @@ class String
 
   def to_camel_case
     camelize self
+  end
+
+  def identity
+    self
   end
 
   #def identifier_to_path!
@@ -111,8 +116,8 @@ module Neurogami
 
           next if path =~ /\.git$/
           load_options template_name
-          next  if no_parse( path, @@options['noparse']   ) 
           next if  ignore(path, @@options['ignore'])
+          next  if no_parse( path, @@options['noparse']   ) 
 
           file_lines = IO.readlines path
           top_line = file_lines.first

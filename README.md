@@ -1,22 +1,28 @@
 rhesus
 =======
 
-    by James Britt / Neurogami 
-    http://www.neurogami.com
-    james@neurogami.com
+[James Britt / Neurogami](http://www.neurogami.com)
+
+james@neurogami.com
+
 
 DESCRIPTION
 -----------
 
 Rhesus is a tool for copying over pre-built templates with optional embedded string interpolation.
 
-It started as a way to make jump-starting [Jimpanzee](http://neurogami.github.com/Jimpanzee/) apps easier, but the user-defined templates need not have anything to do with any special library or programming language.
+It started as a way to make jump-starting [Jimpanzee](http://neurogami.github.com/Jimpanzee/)  (and now 
+[Monkeybars](http://www.monkeybars.org) apps easier, but the user-defined templates need not have 
+anything to do with any special library or programming language.
 
-Basically, you create a skeleton of the files you want as templates in some suitably-named subdirectory of ~/.rhesus.
+Basically, you create a skeleton of the directories and files you want for a template in some suitably-named 
+subdirectory of ~/.rhesus.
 
-If any of those files contain Erb variables, they will be used to prompt the user for real values when that template is used to generate files and directories.
+If any of those files contain [Erb](http://www.ruby-doc.org/stdlib/libdoc/erb/rdoc/classes/ERB.html) variables, 
+they will be used to prompt the user for real values when that template is used to generate files and directories.
 
-The same value gets applied in all cases where that variable is used. Some magic is used to handle proper casing for class and file names.
+The same value gets applied in all cases where that variable is used. Some magic is used to handle proper casing 
+for class and file names.
 
 The results are copied out to a directory relative to where you invoked the 'rhesus' script.
 
@@ -27,13 +33,12 @@ FEATURES/PROBLEMS
 
 Generates files for you to jump-start projects that have common code.
 
-Makes assorted assumptions and needs more testing with a variety of template sources
+Makes assorted assumptions and needs more testing with a variety of template sources.
 
-Driven by the Works for James criteria.  Feedback is welcome.
+Driven by the _Works for James_ criteria.  Feedback is welcome.
 
 Bugs are being tracked on [Pivotal Tracker](http://www.pivotaltracker.com/projects/72892)
 
-Issues added to the GitHub issues sections should get moved there as well.
 
 
 SYNOPSIS
@@ -51,29 +56,30 @@ Then install the gem:
 
 Or, pass the gem source as part of the command:
 
-
    $ sudo gem i rhesus ––source http://gems.neurogami.com
 
-Then run the rhesus setup option:
+Then run the Rhesus setup option:
 
    $ rhesus --setup
 
 
 This should create a `.rhesus` folder in your home directory.  This is where you store you templates, each in its own containing folder.
 
+The default set-up includes a simple template example, `basic.class`, that defines a basic class. Really.
+
 
 ### Basic usage
 
-To use templates, cd to an existing project, or wherever you want to splat out the generated code. For example, start a new jimpanzee application:
+To use templates, cd to an existing project, or wherever you want to splat out the generated code. For example, start a new monkeybars application:
 
-   $ jimpanzee cool-app
+   $ monkeybars cool-app
    $ cd cool-app
 
 Run `rhesus list` to see the available templates
 
    $ rhesus list
 
-NOTE: This behavior might vanish, since in actual use it is pretty useless. See below.
+NOTE: This behavior might vanish, since in actual use it ends up being pretty useless. See below.
 
 Run `rhesus gen` to generate code from a template.  You may optionally pass the name
 of a template, but if you leave that out you'll get a list to pick from.
@@ -106,6 +112,14 @@ or
     3: ramaze.base
     Enter the number of the template to use (1 to 3), or q to quit: 
  
+
+ Some comments on this:  First,  the `list` and `gen` commands are awkward onc eyou have more than 10 or 15 templates
+ because they give you the complete list of all available templates.  There is no list paging or navigation.
+
+ In practice you will find that, so long as you have given the templates reasoanbale names, you
+ will get a list of template candidates by passing in a template name, or part of a name (see above).
+
+ The `list` and `gen` commands are handy if you forgot what things are called.
 
 
 #### Template structure
@@ -159,35 +173,50 @@ Each set is just a top-level directory containing the skeleton files and directo
             `-- spinner_dialog.rb
 
 
-What you call these directories is up to you; there is no code in place to do anything clever with the names (such
-as grouping projects and templates).  But something like that may be added if managing growing numbers of templates
-becomes an issue.  So, the suggested format is `project_type.template_name`
 
-Rhesus starts with some assumptions about what files might be using Erb.  You can add your own file patterns (sort of) by placing a `haz_vars.txt` file in your `.rhesus` folder.
+What you call these directories is up to you; there is no code in place to do anything clever with the names (such
+as grouping projects and templates).  
+
+The suggested format is `project_type.template_name`. For example:
+
+    processing.android
+    ramaze.basic
+    ramaze.user_auth
+    haskell.main
+
+
+Rhesus starts with some assumptions about what files might be using Erb.  You can add your own file patterns (sort of) 
+by placing a `haz_vars.txt` file in your `.rhesus` folder.
 
 By default, the file-end patterns are: `rb txt rhtml ini yml yaml Rakefile gemspec`.
 
 ### Note
 
-A recent addition, and still evolving, is the use of a `.rhesus-options.yaml` file in the root of a template folder.
+A still-evolving feature is the use of a `.rhesus-options.yaml` file in the root of a template folder.
 
 This is because you may have a large set files that do not need any template processing.  
 
-Worse, some files may be themselves Erb templates (or contain Erb markup) that should be copied over as-is, but would otherwise get preprocessed by rhesus.
+Worse, some files may be themselves Erb templates (or contain Erb markup) that should be copied over as-is, but would otherwise get preprocessed by Rhesus.
 
 a `.rhesus-options.yaml` file can contain a hash of file patterns, like this
 
 
         noparse: 
           -  /gems/gems/rack 
-          - .git/
+  
 
         ignore:
           - .git/
 
-This tells `rhesus` that any file whose template path matches on any of the items listed in `noparse` should not be parsed for template variables, and simply copied over as-is.
+This tells `rhesus` that any file whose template path matches on any of the items listed in `noparse` 
+should not be parsed for template variables, and simply copied over as-is.
 
 The array under `ignore` means to ignore any files or directories that match on that substring. No parsing, no copying.
+This is particularly helpful when you want to keep a template in a VCS but not include the VCS meta-files
+when using the template.
+
+
+### More Notes
 
 Rhesus makes some assumptions about how to apply names to files and directories.  It is not always so smart.
 
@@ -195,11 +224,29 @@ If your options file includes a `language` entry then that will be used to drive
 
 (Basically, whether or not everything gets converted to snake_case.)
 
-As of version 0.4.0 the only language it knows is `ruby`.
+In fact, the only language it knows is `ruby`. 
+
+What this means in practice is that if your template files define `class_name.rb`  with  `class  <%= class_name %> `
+then Rhesus will know to snake_case the value substituted in for the file name.  This way, when you invoke the
+template and get prompted for the value of `class_name` you can enter `FooBar` (or something) and get a
+file named `foo_bar.rb` defining the class `FooBar`.
+
+However, there is nothing in place that knows how to do the equivalent for, say, a Haskell or Closure file.
+
+Until there's a way to cleanly add new processing rules for additional languages the best approach for non-Ruby
+files is to use distinct variable names for any value that needs a specific format or casing.
+
+(Note: in practice this tends to not be a big deal.  Haskell files, for example tend to follow CamelCase, as do
+Java and some other language.  If you are creating Processing or Arduino projects the file name as well as the root folder
+are the same CamelCase name. )
+
+The next section explains general variable handling.
 
 ### Template variables
 
-When you select a template set, Rhesus scans these files for Erb (or some alternate) variables.  It then prompts you to provide values.  If you use any of these variable names in file or path names then Rhesus will apply those values to the names and paths when applying the template.  
+When you select a template set, Rhesus scans these files for Erb (or some alternate) variables.  It 
+then prompts you to provide values.  If you use any of these variable names in file or path names 
+then Rhesus will apply those values to the names and paths when applying the template.  
 
 You need to be sure, then, to only use the same variable name across files when you want them to all have the same value.  
 
@@ -230,13 +277,14 @@ The file `klassname_controller.rb` has Erb to define the name of the class:
       set_view  '<%= klassname  %>View'
 
 
-When `jimpanze.basic` is selected for code generation, Rhesus scans the template files and picks out variable names used inside Erb brackets (i.e., `<%= this_is_the_variable  %>` )
+When `jimpanze.basic` is selected for code generation, Rhesus scans the template files and picks out variable names 
+used inside Erb brackets (i.e., `<%= this_is_the_variable  %>` )
 
-When the list of all such variables in all the files is assembled, rhesus prompts for a value for each one.
+When the list of all such variables in all the files is assembled, Rhesus prompts for a value for each one.
 
-
-    Using template jimpanzee.basic
-    Value for klassname: 
+  Rhesus
+      Using template jimpanzee.basic
+      Value for klassname: 
 
 The value entered will than be used for *all* instances of `klassname` in Erb.  It will also be used to alter any file or
 folder names that contain that as well.
@@ -264,28 +312,34 @@ Inside the files, the code will also have this value:
 
 Some assumptions are made in writing out the code.  Variables inside files are replaces as-is.
 
-That is, if you want `Goober` in your text, use `Goober`.  If instead you want `goober`, use that.
+That is, if you want `Goober` in your text, use `Goober`.  If instead you want `goober`, use that.  If
+you need  both then use two distinct variables.
 
 However, for file and folder names, variable values are snake-cased.  That's why you end up with
 `src/goober/goober_controller.rb`.
 
-A value of `FooBar`, for example,  would create `src/foo_bar/foo_bar.rb`. But the string `FooBar` would be used inside the generated files.
+A value of `FooBar`, for example,  would create `src/foo_bar/foo_bar.rb`. But the string `FooBar` would be 
+used inside the generated files.
 
 
 ### Note: poly-lingual templates
 
-Some of the code for auto-mangling file and path names is changing.  Initially the code was specific to Ruby apps, but it's really very handy for all sorts of things, such as Haskell projects.
+Some of the code for auto-mangling file and path names is changing.  Initially the code was specific to Ruby apps, 
+but it's really very handy for all sorts of things, such as Haskell projects.
 
-But these other things have different conventions; code to apply appropriate conventions is being added.
+But these other things have different conventions; code to apply appropriate conventions is being added but
+there's still no nice way to just plop in a new set of language rules.
 
 
 ### Note: "rhamaze" templating
 
-Another recent evolving features is the use of "rhamaze" templating.   
+Yet another evolving features is the use of "rhamaze" templating.   
 
-Suppose you have a Ramaze project template set, with some `.xhtml` files that contain Erb markup.  You do not want Rhesus to pre-process this as Erb, but you *do* want to have some interpolated variables.
+Suppose you have a Ramaze project template set, with some `.xhtml` files that contain Erb markup.  
+You do not want Rhesus to pre-process this as Erb (that is, the resulting project files need to have literal 
+template code), but you *do* want to have *some* interpolated variables.
 
-So, you need to add a leading line that contains the string `RHEMAZAR` and do your rhesus variables using this syntax:
+So, you need to add a leading line that contains the string `RHEMAZAR` and do your Rhesus variables using this syntax:
 
      <|= my_variable |>
 
@@ -297,7 +351,7 @@ Adding templates
 
 You can add templates by just tossing them into the appropriate directory structure under `~/.rhesus`.
 
-You can also install templates from a git repository:
+You can also install templates from a git repository.  For example:
 
     $ rhesus --install git@gitlandia.org:Neurogami/super.bad.template.git
 
@@ -306,9 +360,13 @@ or
     $ rhesus --install git://gitistan.org/Neurogami/super.badder.template.git
 
 
-Rhesus will do a straight-up `git clone` to fetch the files.  If the repo name begins with `rhesus.` (e.g. `git://gitistan.org/Neurogami/rhesus.ramaze.basic`) then that leading string gets stripped from the destination folder (`ramaze.basic`).
+Rhesus will do a straight-up `git clone` to fetch the files.  If the repo name begins with `rhesus.` 
+(e.g. `git://gitistan.org/Neurogami/rhesus.ramaze.basic`) then that leading string gets stripped from 
+the destination folder (`ramaze.basic`).
 
-This is so that repos names can have an identifiable name prefix without having the resulting template folder cluttered with that prefix.
+This is so that repos names can have an identifiable name prefix without having the resulting template 
+folder cluttered with that prefix.  Whether is actually useful or a needless "cool" feature is yet to be
+determined.
 
 
 REQUIREMENTS
@@ -328,7 +386,7 @@ LICENSE
 
 (The MIT License)
 
-Copyright (c) 2009 James Britt / Neurogami
+Copyright (c) 2011 James Britt / Neurogami
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -349,4 +407,4 @@ CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-Feed your head.
+Feed your head. Hack your world. Live curious.
