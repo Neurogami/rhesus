@@ -1,5 +1,4 @@
 == 0.3.3 / 2009-11-02
-<F4>
 * All sorts of new stuff.
 * Key features: 
 ** Installing tempaltes from git repo
