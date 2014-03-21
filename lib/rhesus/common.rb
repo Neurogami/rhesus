@@ -1,6 +1,5 @@
 module Neurogami
   module Rhesus
-
     module Common
 
       RHESUS_OPTIONS_FILE = '.rhesus-options.yaml'
@@ -16,8 +15,8 @@ module Neurogami
         end
       end
 
-      def self.included(base)
-        base.extend(ClassMethods)
+      def self.included base
+        base.extend ClassMethods
       end
 
     end

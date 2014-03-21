@@ -2,6 +2,15 @@ require 'pp'
 require 'erb'
 require 'yaml'
 
+require 'ostruct'
+
+# http://stackoverflow.com/questions/8954706/render-an-erb-template-with-values-from-a-hash
+class ErbalT < OpenStruct
+  def render erb_template
+    erb_template.result binding
+  end
+end
+
 
 class String
   def to_snake_case
@@ -16,9 +25,6 @@ class String
     self
   end
 
-  #def identifier_to_path!
-  #  self.gsub! ':', '/' 
-  #end
 end
 
 module Neurogami
@@ -31,28 +37,8 @@ module Neurogami
       ERB_RE = {
         :ruby_erb => /(<%=)\s*(\S+)\s*(%>)/,
         :rhemazar => /(<\|=\s*)(\S+)(\s*\|>)/
-      } unless const_defined?(:ERB_RE) 
+      } unless const_defined? :ERB_RE 
 
-      # http://refactormycode.com/codes/281-given-a-hash-of-variables-render-an-erb-template
-      @@m = Module.new do
-        class << self
-          public :binding
-          def meta
-            class << self; self; end
-          end
-        end
-
-        class << meta
-          public :define_method
-        end
-
-      end
-
-      def self.create_methods_from_hash variables_hash
-        variables_hash.each do |name, value|
-          @@m.meta.define_method(name) { value }
-        end
-      end
 
       # Can something be added so that if this is actual Erb content it
       # is processed using not-Erb? 
@@ -62,19 +48,20 @@ module Neurogami
         end
 
         # :rhemazar : :ruby_erb
-        create_methods_from_hash variables_hash
+
         case erb
         when :eruby_erb
-          t = ERB.new(template_text, 0, "%<>")
-          t.result @@m.binding
+          t = ERB.new template_text, 0, "%<>"
+          et = ErbalT.new variables_hash 
+          et.render t
         when :rhemazar 
           t = Neurogami::Rhesus::Rhezamar.new template_text
           t.result variables_hash
         else
-          t = ERB.new(template_text, 0, "%<>")
-          t.result @@m.binding
+          t = ERB.new template_text, 0, "%<>"
+          et = ErbalT.new variables_hash 
+          et.render t
         end
-
       end
 
       def self.projects
@@ -115,7 +102,7 @@ module Neurogami
           next if  ignore(path, @@options['ignore'])
 
           next if path =~ /\.git$/
-          load_options template_name
+            load_options template_name
           next if  ignore(path, @@options['ignore'])
           next  if no_parse( path, @@options['noparse']   ) 
 
@@ -142,6 +129,7 @@ module Neurogami
 
       def self.required_vars file_lines, erb_style = :ruby_erb
 
+         # WTF?
         if erb_style == :rhemazar
         end
 
@@ -158,8 +146,6 @@ module Neurogami
         end
         vars.uniq
       end
-
-
 
 
       # Isolate any methods that touch the file system so we can test more easily
@@ -275,7 +261,7 @@ module Neurogami
         full_path = user_template_directory + '/' + template_name 
 
         @@options ||= if File.exist? full_path + '/' + RHESUS_OPTIONS_FILE
-                        o = YAML.load(IO.read( full_path + '/' + RHESUS_OPTIONS_FILE))
+                        o = ::YAML.load(IO.read( full_path + '/' + RHESUS_OPTIONS_FILE))
                         o['noparse'] ||= []
                         o['noparse'].map!{ |patt| Regexp.new(Regexp.escape(patt)) }
                         o['ignore'] ||= []
@@ -291,7 +277,7 @@ module Neurogami
 
       def self.repo_type url
         delimiter = /[:|@]/
-        url_parts = url.split(delimiter, 2)
+          url_parts = url.split(delimiter, 2)
 
         return :unknown unless url_parts.size == 2
 
@@ -325,7 +311,7 @@ module Neurogami
         end
       end
 
-     # git@neurogami.com:example.rhesus_template
+      # git@neurogami.com:example.rhesus_template
       def self.destination_directory_for_git_url repo_url
         d = repo_url.split('/').last.sub( /\.git$/, '')
         d = d.split( ':', 2).last
@@ -376,7 +362,5 @@ module Neurogami
       @@re = Regexp.new "(#{@@re})$"
 
     end
-
-
   end
 end
